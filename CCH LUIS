@@ -1,0 +1,145 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+
+int main()
+{
+	int i=0, j=0;
+	float vet1[1000];
+
+
+
+	FILE *fd=NULL;
+	char ARQUIVO[1000]="C:\\Users\\Windows8\\Desktop\\dados.txt";
+
+	if((fd=fopen(ARQUIVO, "r"))==NULL)
+	{
+    	printf("Erro!");
+	}
+
+
+	float num=0;
+
+	i=0;
+	while(fscanf(fd, "%f", &vet1[i])!=EOF)
+	{
+    	printf("\nConteudo %f", vet1[i++]);
+	}
+
+
+
+	fclose(fd);
+
+
+	char ARQUIVO2[1000]="C:\\Users\\Windows8\\Desktop\\dados2.txt";
+
+	if((fd=fopen(ARQUIVO2, "w"))==NULL)
+	{
+    	printf("Erro!");
+	}
+	float vetcos[1000], vetsin[1000], pcos[1000], psin[1000];
+
+	float fx=0;
+	for(i=0; i<1000; i++)
+	{
+     	fx = 2*(sin(3*(vet1[i]+vet1[i]/2))+cos(vet1[i]*10));  // Nossa funçaozinha muito linda.....!!
+    	//fx = 2*cos(vet1[i]+(M_PI/4)+0.25*cos(100*vet1[i]+(M_PI/3)));
+     	vetcos[i] = cos(vet1[i]);
+     	vetsin[i] = sin(vet1[i]);
+     	pcos[i] = fx*vetcos[i];
+     	psin[i] = fx*vetsin[i];
+
+    	fprintf(fd,"%f %f\n", vet1[i] ,fx);
+	}
+
+
+	fclose(fd);
+
+
+	char arqpcos[1000]="C:\\Users\\Windows8\\Desktop\\arqpcos.txt";
+
+	if((fd=fopen(arqpcos, "w"))==NULL)
+	{
+    	printf("Erro!");
+	}
+	for(i=0;i<1000;i++){
+     	fprintf(fd,"%f %f\n", vet1[i] ,pcos[i]);
+
+	}
+
+
+	fclose(fd);
+
+	char arqpsin[1000]="C:\\Users\\Windows8\\Desktop\\arqpsin.txt";
+
+	if((fd=fopen(arqpsin, "w"))==NULL)
+	{
+    	printf("Erro!");
+	}
+	for(i=0;i<1000;i++){
+     	fprintf(fd,"%f %f\n", vet1[i] ,psin[i]);
+
+	}
+
+
+	fclose(fd);
+
+	char ARQUIVO3[1000]="C:\\Users\\Windows8\\Desktop\\ARQUIVO3.txt";
+
+	if((fd=fopen(ARQUIVO3, "w"))==NULL)
+	{
+    	printf("Erro!");
+	}
+	char comando[200] = "plot 'C:\\Users\\Windows8\\Desktop\\dados2.txt' with lines,";
+	char comando2[200] ="'C:\\Users\\Windows8\\Desktop\\arqpcos.txt' with lines,";
+	char comando3[200] ="'C:\\Users\\Windows8\\Desktop\\arqpsin.txt' with lines";
+
+
+
+	strcat(comando,comando2);
+	strcat(comando,comando3);
+
+
+	fprintf(fd,"%s",comando);
+
+
+	fclose(fd);
+
+
+
+	float soma=0, mediapcos = 0, mediapsin=0;
+
+	for(i=0;i<1000;i++){
+    	soma = soma+pcos[i];
+	}
+	mediapcos = soma/1000;
+
+	soma = 0;
+
+	for(i=0;i<1000;i++){
+    	soma = soma+psin[i];
+	}
+	mediapsin = soma/1000;
+
+	mediapsin = mediapsin * 2;
+	mediapcos = mediapcos * 2;
+
+	float angulo=0;
+
+
+	angulo = atan(mediapsin/mediapcos);
+	printf("\nangulo de fase : %f\n", angulo);
+
+	float amplitude = sqrt(pow(mediapsin,2) + pow(mediapcos,2));
+
+
+	printf("amplitude : %f\n",amplitude);
+
+
+	system("C:\\Users\\Windows8\\Desktop\\gnuplot\\bin\\gnuplot.exe \
+        	-p C:\\Users\\Windows8\\Desktop\\ARQUIVO3.txt");   	//para plotar o grafico
+
+
+	return 0;
+}
